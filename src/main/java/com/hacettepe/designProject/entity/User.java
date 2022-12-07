@@ -1,6 +1,6 @@
 package com.hacettepe.designProject.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 import lombok.Getter;

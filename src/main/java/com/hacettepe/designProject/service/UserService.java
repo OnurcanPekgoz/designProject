@@ -16,7 +16,7 @@ public class UserService {
     UserRepository userRepository;
 
     public List<User> getUsers(){
-        List<User> userList=userRepository.getUsers();
+        List<User> userList=userRepository.findAll();
         return userList;
     }
     
