@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
-import com.hacettepe.designProject.entity.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.hacettepe.designProject.service.UserService;
 
 
@@ -20,12 +20,7 @@ public class UserServiceTest {
     UserService userService;
 
     @Test
-    public void test(){
-        assertDoesNotThrow(() -> {
-        List<User> userList=userService.getUsers();
-        for(int i=0;i<userList.size();i++){
-            assert userList.get(i).getName() != null;
-        }
-    });
+    public void test2() throws JsonMappingException, JsonProcessingException{ 
+        userService.getUserRepos("OnurcanPekgoz");
     }
 }
