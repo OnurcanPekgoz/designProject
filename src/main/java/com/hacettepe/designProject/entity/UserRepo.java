@@ -1,6 +1,5 @@
 package com.hacettepe.designProject.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,6 +27,7 @@ public class UserRepo {
     @OneToOne
     public Owner owner;
     public String html_url;
+    @Column(columnDefinition = "TEXT")
     public String description;
     public boolean fork;
     public String url;
@@ -87,7 +87,6 @@ public class UserRepo {
     public boolean allow_forking;
     public boolean is_template;
     public boolean web_commit_signoff_required;
-    public ArrayList<String> topics;
     public String visibility;
     public int forks;
     public int open_issues;

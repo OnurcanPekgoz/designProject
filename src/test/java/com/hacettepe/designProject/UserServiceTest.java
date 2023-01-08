@@ -10,14 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.hacettepe.designProject.service.UserService;
+import com.hacettepe.designProject.service.ApiService;
 
 
 @SpringBootTest
 public class UserServiceTest {
 
     @Autowired
-    UserService userService;
+    ApiService userService;
 
     @Test
     public void test2() throws JsonMappingException, JsonProcessingException{ 

@@ -3,9 +3,9 @@ package com.hacettepe.designProject.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hacettepe.designProject.entity.UserRepo;
+import com.hacettepe.designProject.entity.User;
 
 @Repository
-public interface UserRepoRepository extends JpaRepository<UserRepo,Integer>{
+public interface UserRepository extends JpaRepository<User,Integer>{
 
 }
