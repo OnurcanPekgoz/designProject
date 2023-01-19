@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hacettepe.designProject.repository.OwnerRepository;
 import com.hacettepe.designProject.repository.PullRepository;
 import com.hacettepe.designProject.repository.UserRepoRepository;
 import com.hacettepe.designProject.repository.UserRepository;
@@ -15,7 +14,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.hacettepe.designProject.entity.Owner;
 import com.hacettepe.designProject.entity.Pull;
 import com.hacettepe.designProject.entity.User;
 import com.hacettepe.designProject.entity.UserRepo;
@@ -26,9 +24,6 @@ import com.hacettepe.designProject.entity.UserRepo;
 public class ApiService {
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    OwnerRepository ownerRepository;
 
     @Autowired
     UserRepoRepository userRepoRepository;
@@ -58,13 +53,13 @@ public class ApiService {
     public void saveUserReposList(String result) throws JsonMappingException, JsonProcessingException{
         List<UserRepo> userReposList = getUserRepos(result);
         for (UserRepo userRepo : userReposList) {
-            if(ownerRepository.existsById(userRepo.getOwner().getId())==false){
+            if(userRepository.existsById(userRepo.getOwner().getId())==false){
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
                 String ownerJson = ow.writeValueAsString(userRepo.getOwner());
-                Owner owner=objectMapper.readValue(ownerJson, Owner.class);
-                ownerRepository.save(owner);
+                User owner=objectMapper.readValue(ownerJson, User.class);
+                userRepository.save(owner);
             }
             userRepoRepository.save(userRepo);
         }

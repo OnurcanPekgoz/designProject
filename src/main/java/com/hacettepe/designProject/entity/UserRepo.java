@@ -5,6 +5,8 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
+
+import org.apache.catalina.startup.UserConfig;
 import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.Getter;
@@ -25,7 +27,7 @@ public class UserRepo {
     @JsonProperty("private") 
     public boolean myprivate;
     @OneToOne
-    public Owner owner;
+    public User owner;
     public String html_url;
     @Column(columnDefinition = "TEXT")
     public String description;
