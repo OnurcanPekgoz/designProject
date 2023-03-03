@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hacettepe.designProject.repository.CommitRepository;
 import com.hacettepe.designProject.repository.PullRepository;
 import com.hacettepe.designProject.repository.UserRepoRepository;
 import com.hacettepe.designProject.repository.UserRepository;
+import com.hacettepe.designProject.result.CommitResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -31,7 +33,8 @@ public class ApiService {
     @Autowired
     PullRepository pullRepository;
 
-    
+    @Autowired
+    CommitRepository commitRepository;
 
     public void saveUser(String result) throws JsonMappingException, JsonProcessingException{
         ObjectMapper objectMapper = new ObjectMapper();
@@ -88,6 +91,25 @@ public class ApiService {
                 userRepository.save(user);
             }
             pullRepository.save(pull);
+        }
+    }
+
+    public List<CommitResult> getCommits(String result) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        CommitResult[] commitResults= objectMapper.readValue(result, CommitResult[].class);
+        List<CommitResult> commitResultList= Arrays.asList(commitResults);
+        for (CommitResult commitResult : commitResultList) {
+            System.out.println(commitResult.getUrl());
+        }
+        return commitResultList;
+    }
+
+    public void saveCommits(String result)  throws JsonMappingException, JsonProcessingException{
+        List<CommitResult> commitResults= getCommits(result);
+        for (CommitResult commitResult : commitResults) {
+           // todo if not exist
+           commitRepository.save(commitResult.getCommit());
         }
     }
 }
