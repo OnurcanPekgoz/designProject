@@ -1,4 +1,6 @@
 6.03.2023 
 ----------
 
-
+- commit'ler db ye eklenecek. 
+- commitlerdeki sha ile pull request'deki sha bilgileri eşleniyor mu kontrol edelim.
+- Dönem Çalışma Planı'nı hazırlayalım. 
