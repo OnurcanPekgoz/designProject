@@ -1,6 +1,18 @@
 6.03.2023 
 ----------
+- commit'ler db ye eklenecek. due date: 13 mart 
+- Dönem Çalışma Planı'nı hazırlayalım. due date: 13 mart,  
+      1 - commit ve issue ların eklenmesi, pull requestler ile ilişkilerinin kurulması - 20 mart 
+      2 - data modelling 27 mart 
+      3 - data preprocessing  27 mart 
+      5 - data transformation - github data'nın event logs'a dönüştürme - 3 Nisan 
+      6 - object centric event logsu araştırma - 3 Nisan (Tuğba)
+      7 - PM algoritmaları çalıştırarak event logsları test etmek ve görselleştirmek - 17 Nisan 
+      8 - PM algoritmalarından Inductive Visual Miner i çalıştırarak sürecin keşfesilmesi - 24 Nisan 
+      9 - Çalışmanın bir konferans bildirisi olarak raporlanması + 2 hafta 
+      10 - Sunun ve youtube videosunun hazırlanması - 1 hafta
+      
 
-- commit'ler db ye eklenecek. 
-- commitlerdeki sha ile pull request'deki sha bilgileri eşleniyor mu kontrol edelim.
-- Dönem Çalışma Planı'nı hazırlayalım. 
+- commitlerdeki sha ile pull request'deki sha bilgileri eşleniyor mu kontrol edelim. due date: 20 mart 
+- issues ları dahil edecek miyiz? due date: 20 mart 
+- milestoneları dahil edecek miyiz? due date: 20 mart 
