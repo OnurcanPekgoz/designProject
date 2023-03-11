@@ -1,5 +1,6 @@
 package com.hacettepe.designProject.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.hacettepe.designProject.entity.Commit;
 import com.hacettepe.designProject.entity.Pull;
 import com.hacettepe.designProject.entity.User;
 import com.hacettepe.designProject.entity.UserRepo;
@@ -49,7 +51,7 @@ public class ApiService {
         UserRepo[] userRepos=objectMapper.readValue(result,UserRepo[].class);
         List<UserRepo> userReposList= Arrays.asList(userRepos);
         for (UserRepo userRepo : userReposList) {
-            System.out.println(userRepo.getName());
+            System.out.println(userRepo.getId());
         }
         return userReposList;
     }
@@ -90,8 +92,35 @@ public class ApiService {
                 User user=objectMapper.readValue(userJson, User.class);
                 userRepository.save(user);
             }
+            List<User> assignees=pull.getAssignees();
+            for (User assignee : assignees) {
+                if(userRepoRepository.existsById(assignee.getId())==false){
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                    String userJson = ow.writeValueAsString(assignee);
+                    User user=objectMapper.readValue(userJson, User.class);
+                    userRepository.save(user);
+                }
+            }
+            List<User> reviewers=pull.getRequested_reviewers();
+            for (User reviewer : reviewers) {
+                if(userRepoRepository.existsById(reviewer.getId())==false){
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                    String userJson = ow.writeValueAsString(reviewer);
+                    User user=objectMapper.readValue(userJson, User.class);
+                    userRepository.save(user);
+                }
+            }
             pullRepository.save(pull);
         }
+    }
+
+    public List<CommitResult> getPullCommits(String result) throws JsonMappingException, JsonProcessingException{
+        List<CommitResult> commitResultList=getCommits(result);
+        return commitResultList;
     }
 
     public List<CommitResult> getCommits(String result) throws JsonMappingException, JsonProcessingException{
@@ -108,8 +137,33 @@ public class ApiService {
     public void saveCommits(String result)  throws JsonMappingException, JsonProcessingException{
         List<CommitResult> commitResults= getCommits(result);
         for (CommitResult commitResult : commitResults) {
-           // todo if not exist
-           commitRepository.save(commitResult.getCommit());
+            Commit commit = new Commit();
+            commit.setSha(commitResult.getSha());
+            commit.setAuthor(commitResult.getAuthor());
+            commit.setCommitter(commitResult.getCommitter());
+            commit.setUrl(commitResult.getUrl());
+            if(commitResult.getCommit()!=null){
+                commit.setMessage(commitResult.getCommit().getMessage());
+                commit.setComment_count(commitResult.getCommit().getComment_count());
+            }
+            // todo if user is deleted from github error
+            if(userRepoRepository.existsById(commit.getAuthor().getId())==false){
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                String userJson = ow.writeValueAsString(commit.getAuthor());
+                User user=objectMapper.readValue(userJson, User.class);
+                userRepository.save(user);
+            }
+            if(userRepoRepository.existsById(commit.getCommitter().getId())==false){
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                String userJson = ow.writeValueAsString(commit.getCommitter());
+                User user=objectMapper.readValue(userJson, User.class);
+                userRepository.save(user);
+            }
+           commitRepository.save(commit);
         }
     }
 }

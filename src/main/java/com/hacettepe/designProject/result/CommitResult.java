@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CommitResult {
+    public String sha;
     public String node_id;
     public Commit commit;
     public String url;

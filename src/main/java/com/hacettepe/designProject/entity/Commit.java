@@ -18,12 +18,13 @@ import lombok.Setter;
 @Table(name = "commits")
 public class Commit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     public int id;
     @OneToOne
     public User author;
     @OneToOne
     public User committer;
+    public String sha;
     @Column(columnDefinition = "TEXT")
     public String message;
     @Column(columnDefinition = "TEXT")
