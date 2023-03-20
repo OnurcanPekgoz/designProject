@@ -1,3 +1,13 @@
+20.03.2023
+
+----
++ commits e date ekledik. 
+- commit ile pull requestleirn ilişkisi kuracağız - sha ile 
+
+
+
+
+
 6.03.2023 
 ----------
 - commit'ler db ye eklenecek. due date: 13 mart 
