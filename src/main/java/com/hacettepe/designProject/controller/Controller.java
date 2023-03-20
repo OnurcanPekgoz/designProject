@@ -45,25 +45,25 @@ public class Controller {
         String url="https://api.github.com/repos/{username}/{repo}/pulls?state=all&?page=pageNum&per_page=100".replace("{username}",userName).replace("{repo}",repo);
         url=url.replace("pageNum", pageNum);
         String result=restTemplate.getForObject(url,String.class);
-        apiService.getPulls(result);
+        apiService.getPulls(result,repo);
     }
     @GetMapping("/savePulls/{userName}/{repo}/{pageNum}")
     public void savePulls(@PathVariable("userName") String userName,@PathVariable("repo") String repo, @PathVariable("pageNum") String pageNum) throws JsonMappingException, JsonProcessingException{
         String url="https://api.github.com/repos/{username}/{repo}/pulls?state=all&?page=pageNum&per_page=100".replace("{username}",userName).replace("{repo}",repo);
         url=url.replace("pageNum", pageNum);
         String result=restTemplate.getForObject(url,String.class);
-        apiService.savePulls(result);
+        apiService.savePulls(result,repo);
     }
 
     @GetMapping("/getCommits/{userName}/{repo}/{pageNum}")
     public void getCommits(@PathVariable("userName") String userName,@PathVariable("repo") String repo, @PathVariable("pageNum") String pageNum) throws JsonMappingException, JsonProcessingException{
-        String url="https://api.github.com/repos/{username}/{repo}/commits?page=pageNum&per_page=100".replace("{username}",userName).replace("{repo}",repo).replace("{pageNum}", pageNum);
+        String url="https://api.github.com/repos/{username}/{repo}/commits?page=pageNum&per_page=100".replace("{username}",userName).replace("{repo}",repo).replace("pageNum", pageNum);
         String result=restTemplate.getForObject(url,String.class);
         apiService.getCommits(result);
     }
     @GetMapping("/saveCommits/{userName}/{repo}/{pageNum}")
     public void saveCommits(@PathVariable("userName") String userName,@PathVariable("repo") String repo, @PathVariable("pageNum") String pageNum) throws JsonMappingException, JsonProcessingException{
-        String url="https://api.github.com/repos/{username}/{repo}/commits?page=pageNum&per_page=100".replace("{username}",userName).replace("{repo}",repo).replace("{pageNum}", pageNum);
+        String url="https://api.github.com/repos/{username}/{repo}/commits?page=pageNum&per_page=100".replace("{username}",userName).replace("{repo}",repo).replace("pageNum", pageNum);
         String result=restTemplate.getForObject(url,String.class);
         apiService.saveCommits(result);
     }

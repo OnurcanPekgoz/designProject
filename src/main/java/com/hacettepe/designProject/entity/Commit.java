@@ -1,5 +1,7 @@
 package com.hacettepe.designProject.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,4 +32,5 @@ public class Commit {
     @Column(columnDefinition = "TEXT")
     public String url;
     public int comment_count;
+    public Date date;
 }

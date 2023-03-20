@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class UserRepo {
     @Id
     public int id;
+    public String name;
     public String node_id;
     @OneToOne
     public User owner;

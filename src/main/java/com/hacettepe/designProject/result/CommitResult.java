@@ -21,4 +21,5 @@ public class CommitResult {
     public String comments_url;
     public User author;
     public User committer;
+    
 }

@@ -70,7 +70,7 @@ public class ApiService {
         }
     }
 
-    public List<Pull> getPulls(String result) throws JsonMappingException, JsonProcessingException{
+    public List<Pull> getPulls(String result,String repo) throws JsonMappingException, JsonProcessingException{
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Pull[] pulls=objectMapper.readValue(result, Pull[].class);
@@ -81,8 +81,8 @@ public class ApiService {
         return pullList;
     }
 
-    public void savePulls(String result) throws JsonMappingException, JsonProcessingException{
-        List<Pull> pulls=getPulls(result);
+    public void savePulls(String result,String repo) throws JsonMappingException, JsonProcessingException{
+        List<Pull> pulls=getPulls(result,repo);
         for (Pull pull : pulls) {
             if(userRepoRepository.existsById(pull.getUser().getId())==false){
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -114,6 +114,8 @@ public class ApiService {
                     userRepository.save(user);
                 }
             }
+            pull.setRepo_name(repo);
+            pull.setSha(pull.getHead().getSha());
             pullRepository.save(pull);
         }
     }
@@ -142,6 +144,7 @@ public class ApiService {
             commit.setAuthor(commitResult.getAuthor());
             commit.setCommitter(commitResult.getCommitter());
             commit.setUrl(commitResult.getUrl());
+            commit.setDate(commitResult.getCommit().getCommitter().getDate());
             if(commitResult.getCommit()!=null){
                 commit.setMessage(commitResult.getCommit().getMessage());
                 commit.setComment_count(commitResult.getCommit().getComment_count());
