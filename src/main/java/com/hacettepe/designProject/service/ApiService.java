@@ -124,11 +124,6 @@ public class ApiService {
         }
     }
 
-    public List<CommitResult> getPullCommits(String result) throws JsonMappingException, JsonProcessingException{
-        List<CommitResult> commitResultList=getCommits(result);
-        return commitResultList;
-    }
-
     public List<CommitResult> getCommits(String result) throws JsonMappingException, JsonProcessingException{
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -183,8 +178,11 @@ public class ApiService {
             String pullJson=restTemplate.getForObject(url,String.class);
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            Pull pull= objectMapper.readValue(pullJson, Pull.class);
-            commit.setPullNum(pull.getNumber());
+            Pull[] pulls= objectMapper.readValue(pullJson, Pull[].class);
+        
+            for(Pull pull: pulls){
+                commit.setPullNum(pull.getNumber());
+            }
             commit.setRepoName(repoName);
             commit.setOwner(userName);
 
