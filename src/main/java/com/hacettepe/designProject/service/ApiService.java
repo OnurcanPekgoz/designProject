@@ -150,21 +150,25 @@ public class ApiService {
                 commit.setComment_count(commitResult.getCommit().getComment_count());
             }
             // todo if user is deleted from github error
-            if(userRepoRepository.existsById(commit.getAuthor().getId())==false){
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String userJson = ow.writeValueAsString(commit.getAuthor());
-                User user=objectMapper.readValue(userJson, User.class);
-                userRepository.save(user);
+            if(commit.getAuthor() != null){
+                if(userRepoRepository.existsById(commit.getAuthor().getId())==false){
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                    String userJson = ow.writeValueAsString(commit.getAuthor());
+                    User user=objectMapper.readValue(userJson, User.class);
+                    userRepository.save(user);
+                }  
             }
-            if(userRepoRepository.existsById(commit.getCommitter().getId())==false){
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String userJson = ow.writeValueAsString(commit.getCommitter());
-                User user=objectMapper.readValue(userJson, User.class);
-                userRepository.save(user);
+            if(commit.getCommitter() != null){
+                if(userRepoRepository.existsById(commit.getCommitter().getId())==false){
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                    String userJson = ow.writeValueAsString(commit.getCommitter());
+                    User user=objectMapper.readValue(userJson, User.class);
+                    userRepository.save(user);
+                }
             }
            commitRepository.save(commit);
         }
