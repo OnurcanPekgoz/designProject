@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.hacettepe.designProject.repository.CommitRepository;
 import com.hacettepe.designProject.repository.PullRepository;
@@ -26,6 +27,9 @@ import com.hacettepe.designProject.entity.UserRepo;
 
 @Service
 public class ApiService {
+    @Autowired
+    RestTemplate restTemplate;
+    
     @Autowired
     UserRepository userRepository;
 
@@ -50,9 +54,9 @@ public class ApiService {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         UserRepo[] userRepos=objectMapper.readValue(result,UserRepo[].class);
         List<UserRepo> userReposList= Arrays.asList(userRepos);
-        for (UserRepo userRepo : userReposList) {
+        /*for (UserRepo userRepo : userReposList) {
             System.out.println(userRepo.getId());
-        }
+        }*/
         return userReposList;
     }
     public void saveUserReposList(String result) throws JsonMappingException, JsonProcessingException{
@@ -75,9 +79,9 @@ public class ApiService {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Pull[] pulls=objectMapper.readValue(result, Pull[].class);
         List<Pull> pullList=Arrays.asList(pulls);
-        for (Pull pull : pullList) {
+        /*for (Pull pull : pullList) {
             System.out.println(pull.getTitle());
-        }
+        }*/
         return pullList;
     }
 
@@ -130,13 +134,13 @@ public class ApiService {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         CommitResult[] commitResults= objectMapper.readValue(result, CommitResult[].class);
         List<CommitResult> commitResultList= Arrays.asList(commitResults);
-        for (CommitResult commitResult : commitResultList) {
+        /*for (CommitResult commitResult : commitResultList) {
             System.out.println(commitResult.getUrl());
-        }
+        }*/
         return commitResultList;
     }
 
-    public void saveCommits(String result)  throws JsonMappingException, JsonProcessingException{
+    public void saveCommits(String result,String userName,String repoName,String pageNum)  throws JsonMappingException, JsonProcessingException{
         List<CommitResult> commitResults= getCommits(result);
         for (CommitResult commitResult : commitResults) {
             Commit commit = new Commit();
@@ -149,7 +153,7 @@ public class ApiService {
                 commit.setMessage(commitResult.getCommit().getMessage());
                 commit.setComment_count(commitResult.getCommit().getComment_count());
             }
-            // todo if user is deleted from github error
+    
             if(commit.getAuthor() != null){
                 if(userRepoRepository.existsById(commit.getAuthor().getId())==false){
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -170,7 +174,21 @@ public class ApiService {
                     userRepository.save(user);
                 }
             }
-           commitRepository.save(commit);
+            
+            String url="https://api.github.com/repos/userName/repoName/commits/sha/pulls?page=pageNum&per_page=100";
+            url=url.replace("userName", userName);
+            url=url.replace("repoName", repoName);
+            url=url.replace("sha", commit.getSha());
+            url=url.replace("pageNum", pageNum)        ;    
+            String pullJson=restTemplate.getForObject(url,String.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            Pull pull= objectMapper.readValue(pullJson, Pull.class);
+            commit.setPullNum(pull.getNumber());
+            commit.setRepoName(repoName);
+            commit.setOwner(userName);
+
+            commitRepository.save(commit);
         }
     }
 }

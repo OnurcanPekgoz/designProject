@@ -65,6 +65,6 @@ public class Controller {
     public void saveCommits(@PathVariable("userName") String userName,@PathVariable("repo") String repo, @PathVariable("pageNum") String pageNum) throws JsonMappingException, JsonProcessingException{
         String url="https://api.github.com/repos/{username}/{repo}/commits?page=pageNum&per_page=100".replace("{username}",userName).replace("{repo}",repo).replace("pageNum", pageNum);
         String result=restTemplate.getForObject(url,String.class);
-        apiService.saveCommits(result);
+        apiService.saveCommits(result,userName,repo,pageNum);
     }
 }

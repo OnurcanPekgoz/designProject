@@ -33,4 +33,7 @@ public class Commit {
     public String url;
     public int comment_count;
     public Date date;
+    public int pullNum;
+    public String owner;
+    public String repoName;
 }
