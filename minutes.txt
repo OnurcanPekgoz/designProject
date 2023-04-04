@@ -1,3 +1,9 @@
+04.04.2023
+----
+
+bir pull request için event logs table i oluşturalım. 
+
+
 20.03.2023
 
 ----
