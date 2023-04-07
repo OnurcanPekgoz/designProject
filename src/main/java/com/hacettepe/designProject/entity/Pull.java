@@ -46,5 +46,5 @@ public class Pull {
     @OneToOne(cascade = CascadeType.ALL)
     public Head head=null;
     public String sha;
-    public String repo_name;
+    public String repoName;
 }

@@ -7,5 +7,5 @@ import com.hacettepe.designProject.entity.Pull;
 
 @Repository
 public interface PullRepository extends JpaRepository<Pull,Integer>{
-
+    Pull findByNumberAndRepoName(int number,String repoName);
 }

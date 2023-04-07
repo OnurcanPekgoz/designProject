@@ -67,4 +67,9 @@ public class Controller {
         String result=restTemplate.getForObject(url,String.class);
         apiService.saveCommits(result,userName,repo,pageNum);
     }
+
+    @GetMapping("/saveEventLog/{userName}/{repo}/{pullNum}")
+    public void saveEventLog(@PathVariable("userName") String userName,@PathVariable("repo") String repo, @PathVariable("pullNum") String pullNum)throws JsonMappingException, JsonProcessingException{
+        apiService.saveEventLog(userName,repo,pullNum);
+    }
 }

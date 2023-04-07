@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.hacettepe.designProject.repository.CommitRepository;
+import com.hacettepe.designProject.repository.EventLogRepository;
 import com.hacettepe.designProject.repository.PullRepository;
 import com.hacettepe.designProject.repository.UserRepoRepository;
 import com.hacettepe.designProject.repository.UserRepository;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.hacettepe.designProject.entity.Commit;
+import com.hacettepe.designProject.entity.EventLog;
 import com.hacettepe.designProject.entity.Pull;
 import com.hacettepe.designProject.entity.User;
 import com.hacettepe.designProject.entity.UserRepo;
@@ -41,6 +43,9 @@ public class ApiService {
 
     @Autowired
     CommitRepository commitRepository;
+
+    @Autowired
+    EventLogRepository eventLogRepository;
 
     public void saveUser(String result) throws JsonMappingException, JsonProcessingException{
         ObjectMapper objectMapper = new ObjectMapper();
@@ -118,7 +123,7 @@ public class ApiService {
                     userRepository.save(user);
                 }
             }
-            pull.setRepo_name(repo);
+            pull.setRepoName(repo);
             pull.setSha(pull.getHead().getSha());
             pullRepository.save(pull);
         }
@@ -189,6 +194,38 @@ public class ApiService {
             commitRepository.save(commit);
         }
     }
+
+    public void saveEventLog(String userName, String repo, String pullnum){
+        UserRepo userRepo = userRepoRepository.findByName(repo);
+        Pull pull = pullRepository.findByNumberAndRepoName(Integer.parseInt(pullnum), repo);
+        List<Commit> commitList = commitRepository.findByPullNum(Integer.parseInt(pullnum));
+
+        for (Commit commit : commitList) {
+            
+            EventLog eventlog = new EventLog();
+            eventlog.setCaseId("Pull Request " + pullnum);
+            eventlog.setActivity("push commit");
+            eventlog.setTimestamp(commit.getDate());
+            if(commit.getCommitter() != null){
+                eventlog.setUser(commit.getCommitter().getLogin());
+            }
+            eventlog.setTitle(commit.getMessage());
+            eventlog.setCommentCount(commit.getComment_count());
+            eventLogRepository.save(eventlog);
+            
+        }
+        EventLog eventlog1 = new EventLog("Pull Request " + pullnum, "Created pull request", pull.getCreated_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        eventLogRepository.save(eventlog1);
+        EventLog eventlog2 = new EventLog("Pull Request " + pullnum, "Updated pull request", pull.getUpdated_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        eventLogRepository.save(eventlog2);
+        EventLog eventlog3 = new EventLog("Pull Request " + pullnum, "Merged pull request", pull.getMerged_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        eventLogRepository.save(eventlog3);
+        EventLog eventlog4 = new EventLog("Pull Request " + pullnum, "Closed pull request", pull.getClosed_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        eventLogRepository.save(eventlog4);
+    }
+
+    
+
 }
     
 
