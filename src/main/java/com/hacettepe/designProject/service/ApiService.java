@@ -209,7 +209,9 @@ public class ApiService {
             if(commit.getCommitter() != null){
                 eventlog.setUser(commit.getCommitter().getLogin());
             }
-            eventlog.setTitle(commit.getMessage());
+            String text = commit.getMessage().replace("\n", " ");
+            text = text.replace("\r", "");
+            eventlog.setTitle(text);
             eventlog.setCommentCount(commit.getComment_count());
             eventLogRepository.save(eventlog);
             

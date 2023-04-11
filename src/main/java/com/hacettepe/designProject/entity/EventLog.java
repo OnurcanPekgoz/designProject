@@ -27,6 +27,7 @@ public class EventLog {
     public String activity;
     public Date timestamp;
     public String user;
+    @Column(columnDefinition = "TEXT")
     public String title;
     public int commentCount;
     
