@@ -224,6 +224,12 @@ public class ApiService {
         eventLogRepository.save(eventlog4);
     }
 
+    public void saveEventLogs(String userName, String repo){
+        List<Pull> pullList=pullRepository.findByRepoName(repo);
+        for (Pull pull : pullList) {
+            saveEventLog(userName, repo, Integer.toString(pull.getNumber()));
+        }
+    }
     
 
 }

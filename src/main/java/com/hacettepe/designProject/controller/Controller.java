@@ -72,4 +72,9 @@ public class Controller {
     public void saveEventLog(@PathVariable("userName") String userName,@PathVariable("repo") String repo, @PathVariable("pullNum") String pullNum)throws JsonMappingException, JsonProcessingException{
         apiService.saveEventLog(userName,repo,pullNum);
     }
+
+    @GetMapping("/saveEventLogs/{userName}/{repo}")
+    public void saveEventLogs(@PathVariable("userName") String userName,@PathVariable("repo") String repo)throws JsonMappingException, JsonProcessingException{
+        apiService.saveEventLogs(userName,repo);
+    }
 }
