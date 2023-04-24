@@ -5,7 +5,7 @@
 - swagger i github da paylaşalım, diğer kullanıcıların kullanımı için, readme de belirtiriz. 
 - case id yi repo name + pull req num diye oluşturalım. 
 - ProM tool kuralım, visual inductive miner ile çalıştıralım: https://promtools.org/ , lite version
-- Disco ile process map i oluşturalım: https://fluxicon.com/disco/
+- Disco ile process map i oluşturalım: https://fluxicon.com/disco/ academic license
 - paper template paylaş - Tuğba hoca iletecek. 
 - rate limiti de authoritize ederek deneyelim. 
 
