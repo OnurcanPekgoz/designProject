@@ -31,8 +31,9 @@ public class EventLog {
     @Column(columnDefinition = "TEXT")
     public String title;
     public int commentCount;
+    public String state;
     
-    public EventLog(String caseId, String activity,String repo, Date timestamp, String user, String title, int commentCount) {
+    public EventLog(String caseId, String activity,String repo, Date timestamp, String user, String title, int commentCount,String state) {
         this.caseId = caseId;
         this.activity = activity;
         this.repo=repo;
@@ -40,5 +41,6 @@ public class EventLog {
         this.user = user;
         this.title = title;
         this.commentCount = commentCount;
+        this.state=state;
     }
 }
