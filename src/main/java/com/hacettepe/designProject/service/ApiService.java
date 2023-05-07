@@ -203,8 +203,9 @@ public class ApiService {
         for (Commit commit : commitList) {
             
             EventLog eventlog = new EventLog();
-            eventlog.setCaseId("Pull Request " + pullnum);
+            eventlog.setCaseId(repo + pullnum);
             eventlog.setActivity("push commit");
+            eventlog.setRepo(repo);
             eventlog.setTimestamp(commit.getDate());
             if(commit.getCommitter() != null){
                 eventlog.setUser(commit.getCommitter().getLogin());
@@ -216,13 +217,13 @@ public class ApiService {
             eventLogRepository.save(eventlog);
             
         }
-        EventLog eventlog1 = new EventLog("Pull Request " + pullnum, "Created pull request", pull.getCreated_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        EventLog eventlog1 = new EventLog(repo + pullnum, "Created pull request",repo, pull.getCreated_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
         eventLogRepository.save(eventlog1);
-        EventLog eventlog2 = new EventLog("Pull Request " + pullnum, "Updated pull request", pull.getUpdated_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        EventLog eventlog2 = new EventLog(repo + pullnum, "Updated pull request",repo, pull.getUpdated_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
         eventLogRepository.save(eventlog2);
-        EventLog eventlog3 = new EventLog("Pull Request " + pullnum, "Merged pull request", pull.getMerged_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        EventLog eventlog3 = new EventLog(repo + pullnum, "Merged pull request",repo, pull.getMerged_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
         eventLogRepository.save(eventlog3);
-        EventLog eventlog4 = new EventLog("Pull Request " + pullnum, "Closed pull request", pull.getClosed_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
+        EventLog eventlog4 = new EventLog(repo + pullnum, "Closed pull request",repo, pull.getClosed_at(), pull.getUser().getLogin(), pull.getTitle(), -1);
         eventLogRepository.save(eventlog4);
     }
 
