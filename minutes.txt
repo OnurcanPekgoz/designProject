@@ -1,3 +1,7 @@
+09.05.2023
+-------
+
+
 ProM tekrar bakılacak
 Pull Id si 0 olan commitler ne yapılmalı?
 timestamp null?
@@ -12,7 +16,7 @@ timestamp null?
 - case id yi repo name + pull req num diye oluşturalım. (+)
 - ProM tool kuralım, visual inductive miner ile çalıştıralım: https://promtools.org/ , lite version
 - Disco ile process map i oluşturalım: https://fluxicon.com/disco/ academic license (+)
-- paper template paylaş - Tuğba hoca iletecek. 
+- paper template paylaş - Tuğba hoca iletecek (+)
 - rate limiti de authoritize ederek deneyelim. (+)
 
 
