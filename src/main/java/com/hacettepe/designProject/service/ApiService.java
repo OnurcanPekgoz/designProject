@@ -5,10 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.hacettepe.designProject.repository.CommitRepository;
+import com.hacettepe.designProject.repository.EventLogRepository;
 import com.hacettepe.designProject.repository.PullRepository;
 import com.hacettepe.designProject.repository.UserRepoRepository;
 import com.hacettepe.designProject.repository.UserRepository;
@@ -19,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.hacettepe.designProject.entity.Commit;
+import com.hacettepe.designProject.entity.EventLog;
 import com.hacettepe.designProject.entity.Pull;
 import com.hacettepe.designProject.entity.User;
 import com.hacettepe.designProject.entity.UserRepo;
@@ -41,6 +47,9 @@ public class ApiService {
 
     @Autowired
     CommitRepository commitRepository;
+
+    @Autowired
+    EventLogRepository eventLogRepository;
 
     public void saveUser(String result) throws JsonMappingException, JsonProcessingException{
         ObjectMapper objectMapper = new ObjectMapper();
@@ -118,7 +127,7 @@ public class ApiService {
                     userRepository.save(user);
                 }
             }
-            pull.setRepo_name(repo);
+            pull.setRepoName(repo);
             pull.setSha(pull.getHead().getSha());
             pullRepository.save(pull);
         }
@@ -169,16 +178,20 @@ public class ApiService {
                     userRepository.save(user);
                 }
             }
-            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth("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");
+
             String url="https://api.github.com/repos/userName/repoName/commits/sha/pulls?page=pageNum&per_page=100";
             url=url.replace("userName", userName);
             url=url.replace("repoName", repoName);
             url=url.replace("sha", commit.getSha());
-            url=url.replace("pageNum", pageNum)        ;    
-            String pullJson=restTemplate.getForObject(url,String.class);
+            url=url.replace("pageNum", pageNum);  
+            
+            HttpEntity<String> entity = new HttpEntity<>("", headers);
+            ResponseEntity<String> pullJson = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            Pull[] pulls= objectMapper.readValue(pullJson, Pull[].class);
+            Pull[] pulls= objectMapper.readValue(pullJson.getBody(), Pull[].class);
         
             for(Pull pull: pulls){
                 commit.setPullNum(pull.getNumber());
@@ -189,6 +202,48 @@ public class ApiService {
             commitRepository.save(commit);
         }
     }
+
+    public void saveEventLog(String userName, String repo, String pullnum){
+        UserRepo userRepo = userRepoRepository.findByName(repo);
+        Pull pull = pullRepository.findByNumberAndRepoName(Integer.parseInt(pullnum), repo);
+        List<Commit> commitList = commitRepository.findByPullNum(Integer.parseInt(pullnum));
+
+        for (Commit commit : commitList) {
+            
+            EventLog eventlog = new EventLog();
+            eventlog.setCaseId(repo + pullnum);
+            eventlog.setActivity("push commit");
+            eventlog.setRepo(repo);
+            eventlog.setTimestamp(commit.getDate());
+            if(commit.getCommitter() != null){
+                eventlog.setUser(commit.getCommitter().getLogin());
+            }
+            String text = commit.getMessage().replace("\n", " ");
+            text = text.replace("\r", "");
+            eventlog.setTitle(text);
+            eventlog.setCommentCount(commit.getComment_count());
+            eventlog.setState(pull.getState());
+            eventLogRepository.save(eventlog);
+            
+        }
+        EventLog eventlog1 = new EventLog(repo + pullnum, "Created pull request",repo, pull.getCreated_at(), pull.getUser().getLogin(), pull.getTitle(), -1,pull.getState());
+        eventLogRepository.save(eventlog1);
+        EventLog eventlog2 = new EventLog(repo + pullnum, "Updated pull request",repo, pull.getUpdated_at(), pull.getUser().getLogin(), pull.getTitle(), -1,pull.getState());
+        eventLogRepository.save(eventlog2);
+        EventLog eventlog3 = new EventLog(repo + pullnum, "Merged pull request",repo, pull.getMerged_at(), pull.getUser().getLogin(), pull.getTitle(), -1,pull.getState());
+        eventLogRepository.save(eventlog3);
+        EventLog eventlog4 = new EventLog(repo + pullnum, "Closed pull request",repo, pull.getClosed_at(), pull.getUser().getLogin(), pull.getTitle(), -1,pull.getState());
+        eventLogRepository.save(eventlog4);
+    }
+
+    public void saveEventLogs(String userName, String repo){
+        List<Pull> pullList=pullRepository.findByRepoName(repo);
+        for (Pull pull : pullList) {
+            saveEventLog(userName, repo, Integer.toString(pull.getNumber()));
+        }
+    }
+    
+
 }
     
 
